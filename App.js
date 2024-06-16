@@ -1,69 +1,41 @@
+import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
-import { Button, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ImageBackground, SafeAreaView, StyleSheet } from "react-native";
+import GameScreen from "./screens/GameScreen";
+import StartGameScreen from "./screens/StartGameScreen";
 
 export default function App() {
-  const [enteredGoalText, setEnteredGoalText] = useState("");
-  const [goalList, setGoalList] = useState([]);
+  const [userNumber, setUserNumber] = useState();
 
-  const goalInputHandler = (goalText) => {
-    setEnteredGoalText(goalText);
-  };
-  const addGoalHandler = () => {
-    setGoalList((currentGoals) => [...currentGoals, enteredGoalText]);
-    setEnteredGoalText(" ");
-  };
+  function pickedNumberHandler(pickedNumber) {
+    setUserNumber(pickedNumber);
+  }
+
+  let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
+
+  if (userNumber) {
+    screen = <GameScreen />;
+  }
 
   return (
-    <View style={styles.appContainer}>
-      <View style={styles.inputContainer}>
-        <TextInput style={styles.textInput} placeholder="Your course Goal" onChangeText={goalInputHandler} value={enteredGoalText} />
-        <Button title="Add Goal" onPress={addGoalHandler} />
-      </View>
-      <View style={styles.goalsContainer}>
-        <ScrollView>
-          {goalList.map((list, index) => (
-            <View key={index} style={styles.goalItem}>
-              <Text style={styles.goalText}>{list}</Text>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-    </View>
+    <LinearGradient colors={["#4e0329", "#ddb52f"]} style={styles.rootScreen}>
+      <ImageBackground
+        source={require("./assets/images/background.png")}
+        resizeMode="cover"
+        style={styles.rootScreen}
+        imageStyle={styles.backgroundImage}
+      >
+        <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
+      </ImageBackground>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  appContainer: {
+  rootScreen: {
     flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 16,
   },
-  inputContainer: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: "#cccccc",
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: "#cccccc",
-    width: "70%",
-    marginRight: 8,
-    padding: 8,
-  },
-  goalsContainer: {
-    flex: 5,
-  },
-  goalItem: {
-    margin: 8,
-    padding: 8,
-    borderRadius: 6,
-    backgroundColor: "#5e0acc",
-  },
-  goalText: {
-    color: "white",
+  backgroundImage: {
+    opacity: 0.15,
   },
 });
